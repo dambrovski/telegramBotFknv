@@ -1,72 +1,62 @@
 package br.com.fkn.telegramBotFknv;
 
 import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+
+/**
+ * Autor: Airton Silva Data: 29/08/2019
+ *
+ */
+
 
 public final class TelegramBot {
-	
-	private final String endpoint = "https://api.telegram.org/";
-    private final String token;
-    
-    public TelegramBot(String token) {
-        this.token = token;
-    }
-    
-    public HttpResponse sendMessage(Integer chatId, String text) throws UnirestException {
-        return Unirest.post(endpoint + "bot" + token + "/sendMessage")
-                .field("chat_id", chatId)
-                .field("text", text)
-                .asJson();
-    }
-    
-    public HttpResponse getUpdates(Integer offset) throws UnirestException {
-        return Unirest.post(endpoint + "bot" + token + "/getUpdates")
-                .field("offset", offset)
-                .asJson();
-    }
-    public void run() throws UnirestException {
-        int last_update_id = 0; // controle das mensagens processadas
-        HttpResponse response;
-        while (true) {
-            response = getUpdates(last_update_id++);
-            if (response.getStatus() == 200) {
-                JSONArray responses = response.getBody().getObject().getJSONArray("result");
-                if (responses.isNull(0)) {
-                    continue;
-                } else {
-                    last_update_id = responses
-                            .getJSONObject(responses.length() - 1)
-                            .getInt("update_id") + 1;
-                }
 
-                for (int i = 0; i < responses.length(); i++) {
-                    JSONObject message = responses
-                            .getJSONObject(i)
-                            .getJSONObject("message");
-                    int chat_id = message
-                            .getJSONObject("chat")
-                            .getInt("id");
-                    String usuario = message
-                            .getJSONObject("chat")
-                            .getString("username");
-                    String texto = message
-                            .getString("text");
-                    String textoInvertido = "";
+	private static String endpoint = "https://api.telegram.org/";
+	private static String token;
+	private static String Url = "http://fknvendas.fknmobile.com.br";
+	private static String message = "Serviço do FKNVENDAS está fora do Ar, favor verificar!";
+	private static int idUsuario = 113116753;
+	private static int codigo = 0;
+	private Boolean laco = true;
 
-                    for (int j = texto.length() - 1; j >= 0; j--) {
-                        textoInvertido += texto.charAt(j);
-                    }
+	public TelegramBot(String token) {
+		this.token = token;
+	}
 
-                    sendMessage(chat_id, textoInvertido);
-                }
-            }
-        }
-    }
+	public static HttpResponse sendMessage(Integer chatId, String text) throws UnirestException {
+		return Unirest.post(endpoint + "bot" + token + "/sendMessage").field("chat_id", chatId).field("text", text)
+				.asJson();
+	}
 
-    
-	
+	public void enviar() throws UnirestException, InterruptedException, IOException {
+
+		while (laco) {
+			new Thread();
+			Thread.sleep(3000);
+			codigo = verificarServico.getResponseCODE();
+
+			//if (codigo != 200) {
+				sendMessage(idUsuario, message);
+			//}
+		}
+	}
+
+	public static class verificarServico {
+
+		public static int getResponseCODE() throws IOException {
+			URL u = new URL(Url);
+			HttpURLConnection huc = (HttpURLConnection) u.openConnection();
+			huc.setRequestMethod("GET");
+			huc.connect();
+			codigo = huc.getResponseCode();
+
+			return codigo;
+
+		}
+	}
 }
