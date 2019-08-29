@@ -7,19 +7,17 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-
 /**
  * Autor: Airton Silva Data: 29/08/2019
  *
  */
 
-
 public final class TelegramBot {
 
 	private static String endpoint = "https://api.telegram.org/";
 	private static String token;
-	private static String Url = "http://fknvendas.fknmobile.com.br";
-	private static String message = "Serviço do FKNVENDAS está fora do Ar, favor verificar!";
+	private static String Url = "http://fknvendas.fknmobile.com.br:8991/ws-fkn-vendas/index.jsf";
+	private static String message = "Serviço do FKNVENDAS está com possíveis problemas, favor verificar!";
 	private static int idUsuario = 113116753;
 	private static int codigo = 0;
 	private Boolean laco = true;
@@ -37,12 +35,17 @@ public final class TelegramBot {
 
 		while (laco) {
 			new Thread();
-			Thread.sleep(3000);
-			codigo = verificarServico.getResponseCODE();
+			Thread.sleep(300000);
 
-			//if (codigo != 200) {
+			try {
+				codigo = verificarServico.getResponseCODE();
+				if (codigo != 200) {
+					laco = true;
+				}
+			} catch (Exception e) {
+
 				sendMessage(idUsuario, message);
-			//}
+			}
 		}
 	}
 
