@@ -19,6 +19,8 @@ public final class TelegramBot {
 	private static String Url = "http://fknvendas.fknmobile.com.br:8991/ws-fkn-vendas/index.jsf";
 	private static String message = "Serviço do FKNVENDAS está com possíveis problemas, favor verificar!";
 	private static int idUsuario = 113116753;
+	private static int idUsuario2 = 853479393;
+	private static int idUsuario3 = 677256128;
 	private static int codigo = 0;
 	private Boolean laco = true;
 
@@ -45,6 +47,8 @@ public final class TelegramBot {
 			} catch (Exception e) {
 
 				sendMessage(idUsuario, message);
+				sendMessage(idUsuario2, message);
+				sendMessage(idUsuario3, message);
 			}
 		}
 	}
